@@ -23,7 +23,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", default="")
 ALGORITHM = os.getenv("ALGORITHM", default="HS256")
 
 router = APIRouter(prefix="/auth", tags=[Tags.AUTHENTICATION])
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -46,24 +46,27 @@ async def create(db: DBDependency, user_request: UserRequest) -> None:
 @router.post("/token")
 async def login(db: DBDependency, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     user = authenticate_user(db, form_data.username, form_data.password)
-    token = create_access_token(user.username, user.id, timedelta(hours=1))
-    return {"user": user, "token": token}
+    token = create_access_token(user.username, user.id, user.role, timedelta(hours=1))
+    return {"user": user, "access_token": token}
 
 
 def authenticate_user(db: Session, username: str, password: str) -> Users:
     user = db.query(Users).filter_by(username=username).first()
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User not found")
     if not bcrypt.checkpw(password.encode("utf-8"), user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
     return user
 
 
-def create_access_token(username: str, user_id: int, expiry_time: timedelta) -> str:
+def create_access_token(
+    username: str, user_id: int, user_role: str, expiry_time: timedelta
+) -> str:
     expires = datetime.now(UTC) + expiry_time
     payload = {
         "sub": username,
         "id": user_id,
+        "role": user_role,
         "expires": expires.isoformat(sep=" ", timespec="seconds"),
     }
     return jwt.encode(payload, key=SECRET_KEY, algorithm=ALGORITHM)
@@ -73,16 +76,11 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> dict[str,
     try:
         payload = jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate user",
-        )
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Could not authenticate user")
     else:
         username = payload.get("sub")
         user_id = payload.get("id")
-        if username is None or user_id is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate user",
-            )
-        return {"username": username, "id": user_id}
+        user_role = payload.get("role")
+        if any(x is None for x in (username, user_id, user_role)):
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Could not authenticate user")
+        return {"username": username, "id": user_id, "role": user_role}
