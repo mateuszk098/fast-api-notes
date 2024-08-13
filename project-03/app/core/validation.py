@@ -57,3 +57,17 @@ class UserResponse(User):
     id: int
     is_active: bool
     hashed_password: bytes
+
+
+class UserPasswordResetRequest(BaseModel):
+    current_password: str
+    new_password: str = Field(min_length=8, max_length=50)
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "current_password": "current_password",
+                "new_password": "new_password",
+            }
+        }
+    )
