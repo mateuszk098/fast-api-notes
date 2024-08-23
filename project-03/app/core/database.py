@@ -15,15 +15,15 @@ POSTGRES_USER = os.getenv("POSTGRES_USER", default="postgres")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", default="password")
 POSTGRES_DB = os.getenv("POSTGRES_DB", default="TodoAppDB")
 
-# SQLALCHEMY_DATABASE_URL = "sqlite:///./todosapp.db" # SQLite.
-SQLALCHEMY_DATABASE_URL = (  # PostgreSQL.
-    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost/{POSTGRES_DB}"
-)
+pattern = "postgresql://{}:{}@localhost/{}"
+SQLALCHEMY_DATABASE_URL = pattern.format(POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB)
+# SQLALCHEMY_DATABASE_URL = "sqlite:///./todosapp.db"  # SQLite.
 
-# SQLite.
+# PostgreSQL
+engine = create_engine(SQLALCHEMY_DATABASE_URL)  # PostgreSQL.
+# SQLite
 # engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-# PostgreSQL.
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 Base = declarative_base()
 

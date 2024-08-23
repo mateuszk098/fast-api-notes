@@ -38,6 +38,7 @@ async def create(db: DBDependency, user_request: UserRequest) -> None:
             user_request.password.encode("utf-8"),
             bcrypt.gensalt(),
         ),
+        phone_number=user_request.phone_number,
     )
     db.add(user)
     db.commit()

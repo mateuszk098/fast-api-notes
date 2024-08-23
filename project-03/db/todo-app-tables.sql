@@ -8,6 +8,7 @@ CREATE    TABLE users (
           last_name VARCHAR(45) DEFAULT NULL,
           hashed_password BYTEA DEFAULT NULL,
           is_active BOOLEAN DEFAULT NULL,
+          phone_number VARCHAR(45) DEFAULT NULL,
           role VARCHAR(45) DEFAULT NULL,
           PRIMARY KEY (id)
           );

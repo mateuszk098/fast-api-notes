@@ -32,6 +32,7 @@ class User(BaseModel):
     first_name: str = Field(min_length=2, max_length=50)
     last_name: str = Field(min_length=2, max_length=50)
     role: str
+    phone_number: str | None = Field(min_length=9, max_length=15, default=None)
 
 
 class UserRequest(User):
@@ -48,6 +49,7 @@ class UserRequest(User):
                 "last_name": "Doe",
                 "password": "password",
                 "role": "user",
+                "phone_number": "123456789",
             }
         }
     )

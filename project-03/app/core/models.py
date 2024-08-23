@@ -26,3 +26,4 @@ class Users(Base):
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     role: Mapped[str] = mapped_column(String)
+    phone_number: Mapped[str] = mapped_column(String)
