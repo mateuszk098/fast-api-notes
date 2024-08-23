@@ -13,7 +13,7 @@ assert load_dotenv(
 
 POSTGRES_USER = os.getenv("POSTGRES_USER", default="postgres")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", default="password")
-POSTGRES_DB = os.getenv("POSTGRES_DB", default="todo-app-db")
+POSTGRES_DB = os.getenv("POSTGRES_DB", default="TodoAppDB")
 
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./todosapp.db" # SQLite.
 SQLALCHEMY_DATABASE_URL = (  # PostgreSQL.
