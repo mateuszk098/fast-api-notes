@@ -16,5 +16,10 @@ app.include_router(admin_router)
 app.include_router(user_router)
 
 
-def run() -> None:
-    uvicorn.run(app, host="localhost", port=8000)
+@app.get("/health")
+def health_check() -> dict[str, str]:
+    return {"status": "Healthy"}
+
+
+def run(*, host: str = "localhost", port: int = 8000) -> None:
+    uvicorn.run(app, host=host, port=port)

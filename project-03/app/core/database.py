@@ -24,6 +24,8 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)  # PostgreSQL.
 # SQLite
 # engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
+# The `scoped_session` ensures thath each thread has its own session
+# to avoid conflicts and ensure data integrity.
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 Base = declarative_base()
 

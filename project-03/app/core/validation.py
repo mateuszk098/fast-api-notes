@@ -22,6 +22,7 @@ class TodoRequest(BaseModel):
 
 class TodoResponse(TodoRequest):
     id: int
+    owner_id: int
 
 
 class User(BaseModel):
