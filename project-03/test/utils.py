@@ -1,5 +1,6 @@
 from typing import Any, Generator
 
+import bcrypt
 import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -7,7 +8,7 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.pool import StaticPool
 
 from app.core.database import Base
-from app.core.models import Todos
+from app.core.models import Todos, Users
 
 # We use PostgreSQL for production, but still we can use SQLite for testing.
 SQLALCHEMY_DATABASE_URL = "sqlite:///./testdb.db"  # SQLite.
@@ -53,4 +54,28 @@ def test_todo() -> Generator[Todos, Any, None]:
     finally:
         with engine.connect() as connection:
             connection.execute(text("DELETE FROM todos;"))
+            connection.commit()
+
+
+@pytest.fixture()
+def test_user() -> Generator[Users, Any, None]:
+    user = Users(
+        username="mateusz",
+        email="mateusz@gmail.com",
+        first_name="Mateusz",
+        last_name="Kowalczyk",
+        hashed_password=bcrypt.hashpw(b"password", bcrypt.gensalt()),
+        role="user",
+        phone_number="123-456-789",
+    )
+
+    db = TestingSessionLocal()
+    db.add(user)
+    db.commit()
+
+    try:
+        yield user
+    finally:
+        with engine.connect() as connection:
+            connection.execute(text("DELETE FROM users;"))
             connection.commit()
