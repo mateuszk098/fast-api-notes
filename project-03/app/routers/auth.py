@@ -6,7 +6,7 @@ import bcrypt
 from dotenv import find_dotenv, load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt  # type: ignore
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from starlette import status
 

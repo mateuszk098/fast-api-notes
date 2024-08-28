@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from .core.database import Base, engine
+from .core.utils import Tags
 from .routers.admin import router as admin_router
 from .routers.auth import router as auth_router
 from .routers.todos import router as todos_router
@@ -16,7 +17,7 @@ app.include_router(admin_router)
 app.include_router(user_router)
 
 
-@app.get("/health")
+@app.get("/health", tags=[Tags.HEALTHCHECK])
 def health_check() -> dict[str, str]:
     return {"status": "Healthy"}
 

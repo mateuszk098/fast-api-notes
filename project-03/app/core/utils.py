@@ -6,3 +6,4 @@ class Tags(StrEnum):
     TODOS = "Todos"
     ADMIN = "Admin"
     USER = "User"
+    HEALTHCHECK = "Healthcheck"
