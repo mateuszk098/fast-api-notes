@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="card text-center">
+        <div class="card-header">
+            Your Todo's!
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                List of Your Todo's
+            </h5>
+            <p class="card-text">
+                What should be done today?
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for todo in todos %}
+                    {% if todo.complete == False %}
+                    <tr class="table-primary align-middle">
+                        <td>{{loop.index}}</td>
+                        <td>{{todo.title}}</td>
+                        <td>{{todo.description}}</td>
+                        <td>{{todo.priority}}</td>
+                        <td>
+                            <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button"
+                                class="btn btn-info mb-2 mt-2">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr class="table-success align-middle">
+                        <td>{{loop.index}}</td>
+                        <td>{{todo.title}}</td>
+                        <td>{{todo.description}}</td>
+                        <td>{{todo.priority}}</td>
+                        <td>
+                            <button onclick="window.location.href='edit-todo-page/{{todo.id}}'" type="button"
+                                class="btn btn-info mb-2 mt-2">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="/add-todo-page" class="btn btn-primary mb-2 mt-2">Add Todo!</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

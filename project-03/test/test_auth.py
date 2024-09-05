@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from jose import jwt
 from starlette import status
 
-from app import app
+from app.app import app
 from app.core.database import get_db
 from app.routers.auth import authenticate_user, create_access_token, get_current_user
 

@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from app import run
+from app.app import run
 
 if __name__ == "__main__":
     p = ArgumentParser()

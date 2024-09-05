@@ -1,14 +1,18 @@
 import os
+import pathlib
 from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any
 
 import bcrypt
 from dotenv import find_dotenv, load_dotenv
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.templating import Jinja2Templates
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from starlette import status
+
+from app import APP_DIR
 
 from ..core.database import DBDependency
 from ..core.models import Users
@@ -22,8 +26,19 @@ assert load_dotenv(
 SECRET_KEY = os.getenv("SECRET_KEY", default="")
 ALGORITHM = os.getenv("ALGORITHM", default="HS256")
 
+templates = Jinja2Templates(directory=pathlib.Path(APP_DIR, "templates/"))
 router = APIRouter(prefix="/auth", tags=[Tags.AUTHENTICATION])
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+
+@router.get("/login-page")
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+
+@router.get("/register-page")
+async def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

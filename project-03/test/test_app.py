@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from starlette import status
 
-from app import app
+from app.app import app
 
 client = TestClient(app)
 

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from starlette import status
 
-from app import app
+from app.app import app
 from app.core.database import get_db
 from app.core.models import Todos
 from app.routers.auth import get_current_user

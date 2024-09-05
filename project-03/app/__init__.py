@@ -1,1 +1,3 @@
-from .app import app, run
+from pathlib import Path
+
+APP_DIR = Path(__file__).parent.absolute()
