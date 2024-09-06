@@ -43,12 +43,25 @@ async def add_todo_page(request: Request):
         return templates.TemplateResponse("add-todo.html", {"request": request, "user": user})
 
 
+@router.get("/edit-todo-page/{todo_id}", include_in_schema=False)
+async def edit_todo_page(db: DBDependency, request: Request, todo_id: int):
+    try:
+        user = get_current_user(request.cookies.get("access_token", ""))
+    except HTTPException:
+        return redirect_to_login()
+    else:
+        todo = get_todo(db, user["id"], todo_id)
+        return templates.TemplateResponse(
+            "edit-todo.html", {"request": request, "todo": todo, "user": user}
+        )
+
+
 @router.get("/", status_code=status.HTTP_200_OK, response_model=list[TodoResponse])
 async def read_all(db: DBDependency, user: UserDependency) -> Any:
     return get_todos(db, user["id"])
 
 
-@router.get("/{todo_id}", status_code=status.HTTP_200_OK, response_model=TodoResponse)
+@router.get("/todo/{todo_id}", status_code=status.HTTP_200_OK, response_model=TodoResponse)
 async def read(db: DBDependency, user: UserDependency, todo_id: int = Path(ge=1)) -> Any:
     return get_todo(db, user["id"], todo_id)
 
@@ -60,7 +73,7 @@ async def create(db: DBDependency, user: UserDependency, todo_request: TodoReque
     db.commit()  # Now commit the data to the database.
 
 
-@router.put("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update(
     db: DBDependency, todo_request: TodoRequest, user: UserDependency, todo_id: int = Path(ge=1)
 ) -> None:
@@ -71,7 +84,7 @@ async def update(
     db.commit()
 
 
-@router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete(db: DBDependency, user: UserDependency, todo_id: int = Path(ge=1)) -> None:
     todo = get_todo(db, user["id"], todo_id)
     db.delete(todo)

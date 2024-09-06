@@ -2,8 +2,10 @@ import pathlib
 
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette import status
 
 from app import APP_DIR
 
@@ -32,8 +34,8 @@ def health_check() -> dict[str, str]:
 
 
 @app.get("/", tags=[Tags.HOME], include_in_schema=False)
-def home(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request})
+def home():
+    return RedirectResponse(url="/auth/login-page", status_code=status.HTTP_302_FOUND)
 
 
 def run(*, host: str = "localhost", port: int = 8000) -> None:
