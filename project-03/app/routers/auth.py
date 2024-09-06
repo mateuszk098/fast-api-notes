@@ -31,12 +31,12 @@ router = APIRouter(prefix="/auth", tags=[Tags.AUTHENTICATION])
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
-@router.get("/login-page")
+@router.get("/login-page", include_in_schema=False)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 
-@router.get("/register-page")
+@router.get("/register-page", include_in_schema=False)
 async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 

@@ -7,3 +7,4 @@ class Tags(StrEnum):
     ADMIN = "Admin"
     USER = "User"
     HEALTHCHECK = "Healthcheck"
+    HOME = "Home"

@@ -20,7 +20,7 @@ router = APIRouter(prefix="/todos", tags=[Tags.TODOS])
 UserDependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.get("/todo-page")
+@router.get("/todo-page", include_in_schema=False)
 async def todo_page(db: DBDependency, request: Request):
     try:
         user = get_current_user(request.cookies.get("access_token", ""))
@@ -29,8 +29,18 @@ async def todo_page(db: DBDependency, request: Request):
     else:
         todos = get_todos(db, user["id"])
         return templates.TemplateResponse(
-            "todo.html", {"request": request, "todos": todos, "user": user}
+            "list-todos.html", {"request": request, "todos": todos, "user": user}
         )
+
+
+@router.get("/add-todo-page", include_in_schema=False)
+async def add_todo_page(request: Request):
+    try:
+        user = get_current_user(request.cookies.get("access_token", ""))
+    except HTTPException:
+        return redirect_to_login()
+    else:
+        return templates.TemplateResponse("add-todo.html", {"request": request, "user": user})
 
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=list[TodoResponse])

@@ -26,12 +26,12 @@ app.include_router(user_router)
 app.mount("/static", StaticFiles(directory=pathlib.Path(APP_DIR, "static/")), name="static")
 
 
-@app.get("/health", tags=[Tags.HEALTHCHECK])
+@app.get("/health", tags=[Tags.HEALTHCHECK], include_in_schema=False)
 def health_check() -> dict[str, str]:
     return {"status": "Healthy"}
 
 
-@app.get("/")
+@app.get("/", tags=[Tags.HOME], include_in_schema=False)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
